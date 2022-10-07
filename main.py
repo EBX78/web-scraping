@@ -1,16 +1,16 @@
 import pymysql                  # connect sql server
 import requests                 # requests for site data
 from bs4 import BeautifulSoup   # readability of site data
-import re                       # find required item from tag text
 from unidecode import unidecode # persian number format to latin format
 
-def PRICE(txt):                 # remove str from price
-    a = txt.text.split()
-    x = "از"
-    y = "تومان"
-    a.remove(x) if x in a else True;
-    a.remove(y) if y in a else True;
-    return unidecode(a[0])
+def PRICE(price_text):                 # remove str from price
+    List = price_text.text.split()
+    shits = ["تومان", "از"]
+    for shit in shits:
+        if shit in List:
+            List.remove(shit)
+
+    return unidecode(List[0].replace(",", ""))
 
 cnx = pymysql.connect(user = 'root', password = '795L_5795l_5', host = '127.0.0.1', database = 'abdullah')  # connect to database
 cursor = cnx.cursor()                                                                                       # create cursor
@@ -31,7 +31,7 @@ existing = 0    # count existing
 # for each page
 while s_page != e_page:
     response = requests.get("https://rojashop.com/shop/fragrances/eudoclon?sub=eudoclon&page=%d"% s_page)   # request data
-    print("PAGE:%d"% s_page)                                                                                # print page number
+    print(f"PAGE:{s_page}")                                                                                # print page number
     soup = BeautifulSoup(response.text, "html.parser")                                                      # readable site data
     name = soup.find_all("strong", attrs = {"class" : "ptitle"})                                            # find items name
     price = soup.find_all("span", attrs = {"class" : "sale-price"})                                         # find items price
@@ -46,6 +46,7 @@ while s_page != e_page:
         except IndexError:
             r_price = "---"             # ... if price value not exist in (i) index (price line 38)
         finally:
+            # print(r_price)
             i += 1                      # next index
 
         if "ادو" in sent and "تویلت" in sent:                               # type
