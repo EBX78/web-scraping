@@ -60,7 +60,7 @@ while s_page != e_page:
             cursor.execute(sql % (sent, edt, 1, s_page, r_price)) if "مردانه" in sent else cursor.execute(sql % (sent, edt, 2, s_page, r_price)) if "زنانه" in sent else cursor.execute(sql % (sent, edt, 0, s_page, r_price))
 
         # edc
-        elif ("کلون" in sent and "ادو" in sent) or ("کلون" in sent):
+        elif "ادو" in sent and "کلون" in sent:
             cursor.execute(sql % (sent, edc, 1, s_page, r_price)) if "مردانه" in sent else cursor.execute(sql % (sent, edc, 2, s_page, r_price)) if "زنانه" in sent else cursor.execute(sql % (sent, edc, 0, s_page, r_price))
 
         # none
